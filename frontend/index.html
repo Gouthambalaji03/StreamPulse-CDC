@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CDC Stream - Real-Time Database Change Streaming Platform</title>
+  <meta name="description" content="Capture real-time changes from a database (insert, update, delete) and stream them to a search index or analytics database.">
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2310b981'><path d='M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5'/></svg>">
+</head>
+<body>
+
+<div class="app-container">
+
+  <!-- Left Sidebar -->
+  <aside class="sidebar">
+    <div class="brand-wrapper">
+      <div class="brand-icon">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5v-9l6 4.5-6 4.5z"/>
+        </svg>
+      </div>
+      <span class="brand-text">CDC Stream</span>
+    </div>
+
+    <ul class="nav-menu">
+      <li class="nav-item active" data-tab="dashboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+          <polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+        <span>Dashboard</span>
+      </li>
+
+      <li class="nav-item" data-tab="events">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <line x1="8" y1="6" x2="21" y2="6"/>
+          <line x1="8" y1="12" x2="21" y2="12"/>
+          <line x1="8" y1="18" x2="21" y2="18"/>
+          <line x1="3" y1="6" x2="3.01" y2="6"/>
+          <line x1="3" y1="12" x2="3.01" y2="12"/>
+          <line x1="3" y1="18" x2="3.01" y2="18"/>
+        </svg>
+        <span>Events</span>
+      </li>
+
+      <li class="nav-item" data-tab="consumers">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+        </svg>
+        <span>Consumers</span>
+      </li>
+
+      <li class="nav-item" data-tab="schema">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <ellipse cx="12" cy="5" rx="9" ry="3"/>
+          <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/>
+          <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
+        </svg>
+        <span>Schema</span>
+      </li>
+
+      <li class="nav-item" data-tab="connectors">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+          <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+        </svg>
+        <span>Connectors</span>
+      </li>
+
+      <li class="nav-item" data-tab="settings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
+        <span>Settings</span>
+      </li>
+    </ul>
+
+    <div class="sidebar-status-box">
+      <div class="pipeline-status">
+        <span class="pulse-dot"></span>
+        <span>WAL Logical Stream</span>
+      </div>
+      <button class="sidebar-btn-quick" id="btnSimulateModal">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Simulate Mutation
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Content Wrapper -->
+  <div class="main-wrapper">
+
+    <!-- Top Sticky Header -->
+    <header class="top-header">
+      <div class="header-title-section">
+        <h1 class="header-title" id="headerTitle">Change Events</h1>
+        <div class="live-pill" id="connStatusPill">
+          <span class="pulse-dot"></span> LIVE
+        </div>
+      </div>
+
+      <div class="header-controls">
+        <button class="btn-secondary" id="btnToggleStream">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+          Pause Stream
+        </button>
+
+        <select class="time-dropdown" id="timeRangeSelect" aria-label="Time Filter">
+          <option>Last 5 minutes</option>
+          <option>Last 15 minutes</option>
+          <option>Last 1 hour</option>
+          <option>Last 24 hours</option>
+        </select>
+
+        <button class="btn-primary" onclick="document.getElementById('btnSimulateModal').click()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+          Emit Event
+        </button>
+      </div>
+    </header>
+
+    <!-- Page Body -->
+    <main class="page-container">
+
+      <!-- TAB 1: DASHBOARD (Matches the screenshot layout) -->
+      <section class="tab-view active" id="tab-dashboard">
+        
+        <!-- Platform Hero Banner (Explaining the system from the post) -->
+        <div style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.08), rgba(15, 23, 42, 0.6)); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 12px; padding: 20px 24px; display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <h2 style="font-size: 1.35rem; font-weight: 800; color: #fff; letter-spacing: -0.02em;">Database Change Streaming Platform</h2>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 4px;">Capture real-time changes from a database (insert, update, delete) and stream them to a search index or analytics database.</p>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <span class="live-pill" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; border-color: rgba(56, 189, 248, 0.3);">Postgres WAL ➔ Kafka</span>
+            <span class="live-pill" style="background: rgba(16, 185, 129, 0.15); color: #34d399; border-color: rgba(16, 185, 129, 0.3);">Zero Data Loss</span>
+          </div>
+        </div>
+
+        <!-- Metric Cards Row (Total Events, Insert Events, Update Events, Delete Events) -->
+        <div class="metrics-grid">
+          
+          <!-- Card 1: Total Events -->
+          <div class="metric-card">
+            <div class="metric-header">
+              <span class="metric-title">Total Events</span>
+            </div>
+            <div class="metric-bottom">
+              <div class="metric-value-wrap">
+                <span class="metric-value" id="metricTotal">12,482</span>
+                <span class="metric-sub-badge">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                  +18%
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2: Insert Events (with Green Sparkline) -->
+          <div class="metric-card">
+            <div class="metric-header">
+              <span class="metric-title">Insert Events</span>
+            </div>
+            <div class="metric-bottom">
+              <div class="metric-value-wrap">
+                <span class="metric-value" id="metricInserts">6,321</span>
+              </div>
+              <div class="sparkline-bars" id="sparkInserts">
+                <div class="spark-bar green" style="height: 25%;"></div>
+                <div class="spark-bar green" style="height: 45%;"></div>
+                <div class="spark-bar green" style="height: 60%;"></div>
+                <div class="spark-bar green" style="height: 80%;"></div>
+                <div class="spark-bar green" style="height: 65%;"></div>
+                <div class="spark-bar green" style="height: 95%;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 3: Update Events (with Blue Sparkline) -->
+          <div class="metric-card">
+            <div class="metric-header">
+              <span class="metric-title">Update Events</span>
+            </div>
+            <div class="metric-bottom">
+              <div class="metric-value-wrap">
+                <span class="metric-value" id="metricUpdates">4,186</span>
+              </div>
+              <div class="sparkline-bars" id="sparkUpdates">
+                <div class="spark-bar blue" style="height: 35%;"></div>
+                <div class="spark-bar blue" style="height: 50%;"></div>
+                <div class="spark-bar blue" style="height: 40%;"></div>
+                <div class="spark-bar blue" style="height: 70%;"></div>
+                <div class="spark-bar blue" style="height: 60%;"></div>
+                <div class="spark-bar blue" style="height: 85%;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 4: Delete Events (with Red Sparkline) -->
+          <div class="metric-card">
+            <div class="metric-header">
+              <span class="metric-title">Delete Events</span>
+            </div>
+            <div class="metric-bottom">
+              <div class="metric-value-wrap">
+                <span class="metric-value" id="metricDeletes">1,975</span>
+              </div>
+              <div class="sparkline-bars" id="sparkDeletes">
+                <div class="spark-bar red" style="height: 40%;"></div>
+                <div class="spark-bar red" style="height: 65%;"></div>
+                <div class="spark-bar red" style="height: 30%;"></div>
+                <div class="spark-bar red" style="height: 55%;"></div>
+                <div class="spark-bar red" style="height: 90%;"></div>
+                <div class="spark-bar red" style="height: 75%;"></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Recent Events Section -->
+        <div class="section-card">
+          <div class="section-header">
+            <h3 class="section-title">Recent Events</h3>
+            <div class="table-filter-pills">
+              <button class="filter-pill dashboard-filter-pill active" data-filter="ALL">All Ops</button>
+              <button class="filter-pill dashboard-filter-pill" data-filter="INSERT">Insert</button>
+              <button class="filter-pill dashboard-filter-pill" data-filter="UPDATE">Update</button>
+              <button class="filter-pill dashboard-filter-pill" data-filter="DELETE">Delete</button>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="events-table">
+              <thead>
+                <tr>
+                  <th style="width: 120px;">Time</th>
+                  <th style="width: 130px;">Operation</th>
+                  <th style="width: 130px;">Table</th>
+                  <th style="width: 120px;">Record ID</th>
+                  <th>Data</th>
+                </tr>
+              </thead>
+              <tbody id="recentEventsBody">
+                <!-- Rows dynamically injected via WebSocket and JS -->
+                <tr>
+                  <td class="time-cell">10:24:31</td>
+                  <td><span class="badge-op insert">INSERT</span></td>
+                  <td class="table-cell-badge">users</td>
+                  <td class="record-id-cell">1024</td>
+                  <td class="data-cell">{ <span class="data-key">"name"</span>: <span class="data-val">"John Doe"</span>, ... }</td>
+                </tr>
+                <tr>
+                  <td class="time-cell">10:24:30</td>
+                  <td><span class="badge-op update">UPDATE</span></td>
+                  <td class="table-cell-badge">orders</td>
+                  <td class="record-id-cell">8932</td>
+                  <td class="data-cell">{ <span class="data-key">"status"</span>: <span class="data-val">"shipped"</span>, ... }</td>
+                </tr>
+                <tr>
+                  <td class="time-cell">10:24:28</td>
+                  <td><span class="badge-op delete">DELETE</span></td>
+                  <td class="table-cell-badge">products</td>
+                  <td class="record-id-cell">554</td>
+                  <td class="data-cell">{ <span class="data-key">"id"</span>: <span class="data-val">554</span> }</td>
+                </tr>
+                <tr>
+                  <td class="time-cell">10:24:27</td>
+                  <td><span class="badge-op insert">INSERT</span></td>
+                  <td class="table-cell-badge">payments</td>
+                  <td class="record-id-cell">7221</td>
+                  <td class="data-cell">{ <span class="data-key">"amount"</span>: <span class="data-val">129.99</span>, ... }</td>
+                </tr>
+                <tr>
+                  <td class="time-cell">10:24:26</td>
+                  <td><span class="badge-op update">UPDATE</span></td>
+                  <td class="table-cell-badge">users</td>
+                  <td class="record-id-cell">1023</td>
+                  <td class="data-cell">{ <span class="data-key">"last_login"</span>: <span class="data-val">"2024-01-08..."</span> }</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Tech Stack Component (Matching the bottom badges of the image) -->
+        <div class="tech-stack-container">
+          <div class="tech-stack-title">
+            <span>Tech Stack</span>
+            <span style="font-size:0.75rem; color:var(--text-muted); font-weight:400;">Enterprise Distributed Architecture</span>
+          </div>
+
+          <div class="tech-stack-grid">
+            
+            <!-- PostgreSQL -->
+            <div class="tech-badge-card">
+              <div class="tech-icon-wrapper">
+                <svg viewBox="0 0 128 128" width="44" height="44">
+                  <path d="M63.89 15.68c-1.39 0-2.8.08-4.2.23-14.88 1.63-23.47 10.96-26.68 18.06-4.51 9.99-4.32 23.36 5.86 31.81-1.04 5.25-1.57 11.23-1.45 17.61.18 9.53 1.83 18.49 4.63 26.04 1.76-1.53 3.65-2.88 5.63-4.04-1.92-5.74-3.07-12.44-3.23-19.68-.13-6.19.46-11.83 1.57-16.73 1.25.79 2.58 1.51 3.99 2.14 5.89 2.64 12.87 3.5 19.34 2.37 3.33-.58 6.45-1.74 9.21-3.37 1.54 2.87 3.73 5.37 6.41 7.28 4.25 3.03 9.61 4.58 15.22 4.45 5.56-.13 11.19-2.02 15.68-5.35-4.22 8.35-8.52 14.82-12.57 19.36-2.58 2.89-5.14 5.09-7.58 6.64 2.89 2.1 6.13 3.72 9.65 4.77 3.42-2.14 6.84-5.06 10.15-8.77 5.07-5.69 10.23-13.78 14.93-24.31 3.06-6.84 5.14-14.71 5.9-23.11.75-8.35-.12-16.89-2.5-24.89-3.95-13.23-14.15-22.18-27.13-24.96-7.39-1.59-15.01-1.54-22.28.27l-.02.01c-4.44-1.28-9.03-1.85-13.57-1.85z" fill="#336791"/>
+                  <path d="M50.41 42.12c1.76 0 3.19 1.43 3.19 3.19 0 1.76-1.43 3.19-3.19 3.19-1.76 0-3.19-1.43-3.19-3.19 0-1.76 1.43-3.19 3.19-3.19z" fill="#ffffff"/>
+                </svg>
+              </div>
+              <span class="tech-badge-name">PostgreSQL</span>
+              <span class="tech-badge-sub">WAL Source</span>
+            </div>
+
+            <!-- Kafka -->
+            <div class="tech-badge-card">
+              <div class="tech-icon-wrapper">
+                <svg viewBox="0 0 128 128" width="44" height="44">
+                  <g fill="#231F20">
+                    <circle cx="64" cy="64" r="58" fill="#18181b"/>
+                    <circle cx="64" cy="64" r="14" fill="#38bdf8"/>
+                    <circle cx="36" cy="38" r="9" fill="#ffffff"/>
+                    <circle cx="92" cy="38" r="9" fill="#ffffff"/>
+                    <circle cx="64" cy="96" r="9" fill="#ffffff"/>
+                    <line x1="64" y1="64" x2="36" y2="38" stroke="#38bdf8" stroke-width="4"/>
+                    <line x1="64" y1="64" x2="92" y2="38" stroke="#38bdf8" stroke-width="4"/>
+                    <line x1="64" y1="64" x2="64" y2="96" stroke="#38bdf8" stroke-width="4"/>
+                  </g>
+                </svg>
+              </div>
+              <span class="tech-badge-name">Kafka</span>
+              <span class="tech-badge-sub">Event Stream Bus</span>
+            </div>
+
+            <!-- MongoDB -->
+            <div class="tech-badge-card">
+              <div class="tech-icon-wrapper">
+                <svg viewBox="0 0 128 128" width="44" height="44">
+                  <path d="M63.8 11.2c-2.3 2.5-23.7 26.8-23.7 54.3 0 23.3 14.6 39.7 23.7 49.3 9.1-9.6 23.7-26 23.7-49.3 0-27.5-21.4-51.8-23.7-54.3z" fill="#13aa52"/>
+                  <path d="M63.8 11.2v104.3c9.1-9.6 23.7-26 23.7-49.3 0-27.5-21.4-51.8-23.7-55z" fill="#116149"/>
+                  <path d="M63.8 116.5c-.7.6-1.5 1.3-2.3 2 0 0 1.2-4.4 2.3-2z" fill="#b8c4c2"/>
+                </svg>
+              </div>
+              <span class="tech-badge-name">MongoDB</span>
+              <span class="tech-badge-sub">Analytics Data Lake</span>
+            </div>
+
+            <!-- Elasticsearch -->
+            <div class="tech-badge-card">
+              <div class="tech-icon-wrapper">
+                <svg viewBox="0 0 128 128" width="44" height="44">
+                  <path d="M28 42c6-18 24-28 36-28s30 10 36 28H28z" fill="#00bfb3"/>
+                  <rect x="28" y="52" width="72" height="20" rx="6" fill="#fec524"/>
+                  <path d="M28 82c6 18 24 28 36 28s30-10 36-28H28z" fill="#ff496a"/>
+                </svg>
+              </div>
+              <span class="tech-badge-name">Elasticsearch</span>
+              <span class="tech-badge-sub">Search Index Sink</span>
+            </div>
+
+            <!-- Python (FastAPI) -->
+            <div class="tech-badge-card">
+              <div class="tech-icon-wrapper">
+                <svg viewBox="0 0 128 128" width="44" height="44">
+                  <path d="M62.6 14.2c-15.6 0-26.4 6.8-26.4 19.8v10.4h27.1v3.9H23.9C10.9 48.3 0 58.7 0 74.3c0 15.6 11.4 25.1 27.1 25.1h7.8v-11c0-12.8 11-23.4 23.8-23.4h26.4V40.6c0-15.6-12-26.4-42.5-26.4zm-14 8.7c2.8 0 5 2.2 5 5s-2.2 5-5 5-5-2.2-5-5 2.2-5 5-5z" fill="#38bdf8"/>
+                  <path d="M65.4 113.8c15.6 0 26.4-6.8 26.4-19.8V83.6H64.7v-3.9h39.4c13 0 23.9-10.4 23.9-26 0-15.6-11.4-25.1-27.1-25.1h-7.8v11c0 12.8-11 23.4-23.8 23.4H42.9v24.4c0 15.6 12 26.4 22.5 26.4zm14-8.7c-2.8 0-5-2.2-5-5s2.2-5 5-5 5 2.2 5 5-2.2 5-5 5z" fill="#fbbf24"/>
+                </svg>
+              </div>
+              <span class="tech-badge-name">Python (FastAPI)</span>
+              <span class="tech-badge-sub">Stream Engine</span>
+            </div>
+
+            <!-- Docker -->
+            <div class="tech-badge-card">
+              <div class="tech-icon-wrapper">
+                <svg viewBox="0 0 128 128" width="44" height="44">
+                  <path d="M125 56.4c-3.1-2.2-9.9-3.5-15.4-.7-.9.4-1.7 1-2.5 1.7-4.1-12.7-14.8-16.7-15.2-16.8l-3.3-1.2-2.1 2.8c-7.9 10.7-5.4 21.6-4.9 23.3-4.1 2.2-9.1 3.5-15.4 3.7H4.4c-2.4 0-4.4 2-4.4 4.4 0 16.5 6.7 32.2 18.4 43.1 11.2 10.5 26.3 16.3 42.4 16.3 45.4 0 66.8-30.8 67.2-74.8v-1.9zm-49.8-7.7h11.7v10.9H75.2V48.7zm-15.6 0h11.7v10.9H59.6V48.7zm-15.6 0h11.7v10.9H44V48.7zm15.6-14.6h11.7V45H59.6V34.1zm-15.6 0H55.7V45H44V34.1zm31.2 0h11.7V45H75.2V34.1zm-46.8 14.6h11.7v10.9H28.4V48.7z" fill="#0db7ed"/>
+                </svg>
+              </div>
+              <span class="tech-badge-name">Docker</span>
+              <span class="tech-badge-sub">Containerized</span>
+            </div>
+
+          </div>
+        </div>
+
+      </section>
+
+      <!-- TAB 2: EVENTS EXPLORER -->
+      <section class="tab-view" id="tab-events">
+        <div class="section-card">
+          <div class="section-header" style="flex-wrap: wrap; gap: 12px;">
+            <div style="display:flex; align-items:center; gap:12px;">
+              <input type="text" id="eventsSearchInput" class="form-input" placeholder="Search record ID or payload..." style="width:260px; padding: 6px 12px; font-size:0.82rem;">
+              <select id="eventsTableSelect" class="form-select" style="padding:6px 10px; font-size:0.82rem;">
+                <option value="ALL">All Tables</option>
+                <option value="users">users</option>
+                <option value="orders">orders</option>
+                <option value="products">products</option>
+                <option value="payments">payments</option>
+                <option value="inventory">inventory</option>
+              </select>
+              <select id="eventsOpSelect" class="form-select" style="padding:6px 10px; font-size:0.82rem;">
+                <option value="ALL">All Operations</option>
+                <option value="INSERT">INSERT</option>
+                <option value="UPDATE">UPDATE</option>
+                <option value="DELETE">DELETE</option>
+              </select>
+            </div>
+            <button class="btn-secondary" id="btnSpike50" style="font-size:0.8rem; padding:6px 12px;">
+              ⚡ Generate 30 Event Spike
+            </button>
+          </div>
+
+          <div class="table-responsive">
+            <table class="events-table">
+              <thead>
+                <tr>
+                  <th style="width: 120px;">Time</th>
+                  <th style="width: 130px;">Operation</th>
+                  <th style="width: 130px;">Table</th>
+                  <th style="width: 120px;">Record ID</th>
+                  <th>Data Snapshot</th>
+                </tr>
+              </thead>
+              <tbody id="eventsExplorerBody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 3: CONSUMERS -->
+      <section class="tab-view" id="tab-consumers">
+        <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 22px;">
+          <h3 style="color:#fff; margin-bottom: 6px;">Apache Kafka Consumer Groups</h3>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 20px;">
+            Active stream workers subscribed to change data topics with lag telemetry, commit markers, and partition rebalance state.
+          </p>
+          <div class="consumer-list" id="consumersList">
+            <!-- Consumer group cards -->
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 4: SCHEMA REGISTRY -->
+      <section class="tab-view" id="tab-schema">
+        <div>
+          <div style="margin-bottom: 20px;">
+            <h3 style="color:#fff; margin-bottom: 4px;">PostgreSQL Schema Registry & CDC Catalogs</h3>
+            <p style="font-size:0.85rem; color:var(--text-secondary);">
+              Replicated tables in <code>public</code> schema configured with <code>REPLICA IDENTITY FULL</code> for complete Before/After change log capture.
+            </p>
+          </div>
+          <div class="schema-grid" id="schemasGrid">
+            <!-- Schemas rendered dynamically -->
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 5: CONNECTORS & TOPOLOGY -->
+      <section class="tab-view" id="tab-connectors">
+        <div style="display:flex; flex-direction:column; gap:20px;">
+          <div class="pipeline-flow" id="connectorsFlow">
+            <div class="pipeline-node running">
+              <span class="node-title">🐘 PostgreSQL 16</span>
+              <span class="node-sub">Source (WAL Logical)</span>
+              <span class="node-metric">Status: ACTIVE</span>
+            </div>
+            <div class="pipeline-arrow">&rarr;</div>
+            <div class="pipeline-node running">
+              <span class="node-title">⚡ Debezium Connector</span>
+              <span class="node-sub">Capture Engine</span>
+              <span class="node-metric">18.4 eps</span>
+            </div>
+            <div class="pipeline-arrow">&rarr;</div>
+            <div class="pipeline-node running">
+              <span class="node-title">📬 Apache Kafka</span>
+              <span class="node-sub">Broker (12 Partitions)</span>
+              <span class="node-metric">Lag: 0.4 ms</span>
+            </div>
+            <div class="pipeline-arrow">&rarr;</div>
+            <div class="pipeline-node running">
+              <span class="node-title">🔍 Elasticsearch</span>
+              <span class="node-sub">Search Sink Index</span>
+              <span class="node-metric">Synced</span>
+            </div>
+            <div class="pipeline-node running">
+              <span class="node-title">🍃 MongoDB</span>
+              <span class="node-sub">Analytics Data Lake</span>
+              <span class="node-metric">Synced</span>
+            </div>
+          </div>
+
+          <div class="section-card">
+            <div class="section-header">
+              <h3 class="section-title">Active Connectors & Pipelines</h3>
+            </div>
+            <div class="consumer-list" id="connectorsList" style="padding: 16px;">
+              <!-- Connectors items -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 6: SETTINGS -->
+      <section class="tab-view" id="tab-settings">
+        <div class="section-card" style="max-width: 680px; padding: 24px;">
+          <h3 class="section-title" style="margin-bottom: 20px;">Streaming & Simulation Controls</h3>
+          
+          <div class="form-group" style="margin-bottom: 20px;">
+            <label class="form-label" style="display:flex; justify-content:space-between;">
+              <span>Emission Rate / Event Delay:</span>
+              <span id="settingSpeedVal" style="color:var(--emerald); font-weight:700;">1.2s</span>
+            </label>
+            <input type="range" id="settingSpeedRange" min="0.2" max="4.0" step="0.2" value="1.2" style="accent-color: var(--emerald);">
+          </div>
+
+          <div style="display:flex; align-items:center; justify-content:space-between; padding: 14px 0; border-top:1px solid var(--border-subtle); border-bottom:1px solid var(--border-subtle); margin-bottom:20px;">
+            <div>
+              <div style="font-weight:600; color:#fff;">Audio Feedback (Event Chimes)</div>
+              <div style="font-size:0.78rem; color:var(--text-muted);">Synthesizes subtle harmonic audio frequencies on every database mutation</div>
+            </div>
+            <input type="checkbox" id="settingSoundToggle" checked style="width:18px; height:18px; accent-color: var(--emerald); cursor:pointer;">
+          </div>
+
+          <div style="display:flex; gap:12px;">
+            <button class="btn-secondary" id="btnResetStats">Clear Event Log Buffer</button>
+            <button class="btn-primary" onclick="alert('Configuration saved')">Save Preferences</button>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Interactive Mutation Simulation Modal -->
+  <div class="modal-overlay" id="mutationModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Simulate Database Change (CDC Pulse)</h3>
+        <button class="modal-close-btn" id="modalCloseBtn">&times;</button>
+      </div>
+
+      <form id="mutationForm">
+        <div class="form-group" style="margin-bottom: 14px;">
+          <label class="form-label">Database Table</label>
+          <select id="mutateTable" class="form-select">
+            <option value="users">users (User Accounts & Profiles)</option>
+            <option value="orders" selected>orders (E-Commerce Transactions)</option>
+            <option value="products">products (Product Inventory)</option>
+            <option value="payments">payments (Financial Ledgers)</option>
+            <option value="inventory">inventory (Warehouse Stock)</option>
+          </select>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 14px;">
+          <label class="form-label">Operation Type</label>
+          <select id="mutateOp" class="form-select">
+            <option value="INSERT">INSERT (Create New Row)</option>
+            <option value="UPDATE" selected>UPDATE (Mutate Existing Row)</option>
+            <option value="DELETE">DELETE (Remove Record from Table)</option>
+          </select>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 14px;">
+          <label class="form-label">Record ID (Primary Key)</label>
+          <input type="number" id="mutateRecordId" class="form-input" placeholder="e.g. 8932 (leave blank for random auto-id)">
+        </div>
+
+        <div class="form-group" style="margin-bottom: 20px;">
+          <label class="form-label">Data JSON Payload</label>
+          <textarea id="mutateData" class="form-textarea">{"status": "shipped", "carrier": "FedEx", "tracking": "FX-8849201"}</textarea>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 10px;">
+          <button type="button" class="btn-secondary" id="modalCancelBtn">Cancel</button>
+          <button type="submit" class="btn-primary">Write to Database WAL</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Event Inspector Drawer (Debezium JSON & Before/After Diff) -->
+  <aside class="event-drawer" id="eventDrawer">
+    <div class="drawer-header">
+      <div>
+        <h3 style="color:#fff; font-size:1.1rem; display:flex; align-items:center; gap:8px;">
+          <span>Event Detail</span>
+          <span id="drawerOpBadge" class="badge-op insert">INSERT</span>
+        </h3>
+        <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;" id="drawerTime">10:24:31</div>
+      </div>
+      <button class="modal-close-btn" id="drawerCloseBtn">&times;</button>
+    </div>
+
+    <div class="drawer-body">
+      <div>
+        <div style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.04em;">Metadata</div>
+        <div style="margin-top:6px; display:grid; grid-template-columns:1fr 1fr; gap:8px; font-size:0.82rem;">
+          <div>Table: <strong id="drawerTable" style="color:#fff;">public.orders</strong></div>
+          <div>Record ID: <strong id="drawerRecordId" style="color:#fff;">8932</strong></div>
+          <div>WAL LSN: <strong id="drawerWalLsn" style="color:#38bdf8;">0/1A4D800</strong></div>
+          <div>Tx ID: <strong id="drawerTxId" style="color:#38bdf8;">10428</strong></div>
+          <div>Kafka Topic: <strong id="drawerKafkaTopic" style="color:#fff;">cdc.postgres.public.orders</strong></div>
+          <div>Latency: <strong id="drawerLatency" style="color:var(--emerald);">2.4 ms</strong></div>
+        </div>
+      </div>
+
+      <div>
+        <div style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.04em; margin-bottom:6px;">Before Image (Previous State)</div>
+        <div class="code-block-box" id="drawerBeforeBox" style="color:#f87171;">/* nil */</div>
+      </div>
+
+      <div>
+        <div style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.04em; margin-bottom:6px;">After Image (Committed State)</div>
+        <div class="code-block-box" id="drawerAfterBox" style="color:#34d399;">{ "status": "shipped" }</div>
+      </div>
+
+      <div>
+        <div style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.04em; margin-bottom:6px;">Full Debezium / CDC Envelope</div>
+        <div class="code-block-box" id="drawerRawJson">{}</div>
+      </div>
+    </div>
+  </aside>
+
+</div>
+
+<script src="/static/js/app.js"></script>
+</body>
+</html>
