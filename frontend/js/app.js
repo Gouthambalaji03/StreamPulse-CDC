@@ -216,8 +216,8 @@
       filtered = filtered.filter(e => e.operation.toUpperCase() === state.activeFilter);
     }
     
-    // Show 5 most recent on the dashboard matching the original mockup
-    filtered.slice(0, 5).forEach(ev => {
+    // Show 7 most recent on the dashboard
+    filtered.slice(0, 7).forEach(ev => {
       el.recentEventsBody.appendChild(createTableRow(ev, false));
     });
   }
@@ -241,8 +241,8 @@
       const newTr = createTableRow(ev, true);
       el.recentEventsBody.insertBefore(newTr, el.recentEventsBody.firstChild);
       
-      // Keep row count limited to 5 on the dashboard
-      while (el.recentEventsBody.children.length > 5) {
+      // Keep row count limited to 7 on the dashboard
+      while (el.recentEventsBody.children.length > 7) {
         el.recentEventsBody.removeChild(el.recentEventsBody.lastChild);
       }
     }
