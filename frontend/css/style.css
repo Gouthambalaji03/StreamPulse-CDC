@@ -1023,23 +1023,297 @@ body {
   word-break: break-all;
 }
 
-/* Responsive Breakpoints */
-@media (max-width: 1024px) {
+/* ==========================================================================
+   Mobile Navigation Controls & Backdrop
+   ========================================================================== */
+.mobile-menu-btn {
+  display: none;
+  background: transparent;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  padding: 6px 8px;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.mobile-menu-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--border-bright);
+}
+
+.sidebar-close-btn {
+  display: none;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 4px;
+  transition: color 0.15s;
+}
+
+.sidebar-close-btn:hover {
+  color: #ffffff;
+}
+
+.sidebar-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 40;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  pointer-events: none;
+}
+
+.sidebar-backdrop.open {
+  display: block;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ==========================================================================
+   Comprehensive Responsive Breakpoints (All Devices)
+   ========================================================================== */
+
+/* 1. Laptops & Small Desktops (<= 1200px) */
+@media (max-width: 1200px) {
   .metrics-grid {
     grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
   }
 }
 
-@media (max-width: 768px) {
+/* 2. Tablets & Landscape iPads (<= 1024px) */
+@media (max-width: 1024px) {
   .sidebar {
     position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
     transform: translateX(-100%);
-    transition: transform 0.3s ease;
+    transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 50;
+    box-shadow: 12px 0 40px rgba(0, 0, 0, 0.95);
   }
+
   .sidebar.mobile-open {
     transform: translateX(0);
   }
+
+  .mobile-menu-btn {
+    display: inline-flex;
+  }
+
+  .sidebar-close-btn {
+    display: block;
+  }
+
+  .brand-wrapper {
+    justify-content: space-between;
+  }
+
+  .top-header {
+    padding: 0 20px;
+  }
+
+  .page-container {
+    padding: 20px;
+    gap: 20px;
+  }
+
+  .event-drawer {
+    width: 440px;
+    right: -460px;
+  }
+}
+
+/* 3. Small Tablets & Large Phones (<= 768px) */
+@media (max-width: 768px) {
+  .top-header {
+    height: auto;
+    min-height: 60px;
+    padding: 12px 16px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .header-title-section {
+    gap: 10px;
+  }
+
+  .header-title {
+    font-size: 1.15rem;
+  }
+
+  .header-controls {
+    width: 100%;
+    justify-content: space-between;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .header-controls .btn-secondary,
+  .header-controls .btn-primary,
+  .header-controls .time-dropdown {
+    flex: 1;
+    min-width: 110px;
+    text-align: center;
+    justify-content: center;
+  }
+
+  .platform-hero-banner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 16px 18px;
+  }
+
+  .platform-hero-banner h2 {
+    font-size: 1.1rem;
+  }
+
+  .platform-hero-banner p {
+    font-size: 0.8rem;
+  }
+
+  .metrics-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .metric-card {
+    padding: 14px 16px;
+    min-height: auto;
+  }
+
+  .metric-value {
+    font-size: 1.65rem;
+  }
+
+  .sparkline-bars {
+    height: 32px;
+    width: 72px;
+    gap: 2px;
+  }
+
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 18px;
+  }
+
+  .table-filter-pills {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 2px;
+  }
+
+  .table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .events-table {
+    min-width: 620px;
+  }
+
+  .events-table th,
+  .events-table td {
+    padding: 10px 14px;
+    font-size: 0.8rem;
+  }
+
+  .event-drawer {
+    width: 100vw;
+    right: -100vw;
+    padding: 20px 16px;
+  }
+
+  .modal-content {
+    width: 95vw;
+    padding: 20px 16px;
+    margin: 10px;
+  }
+
+  /* Topology & Sinks */
+  .pipeline-flow {
+    flex-direction: column;
+    gap: 10px;
+    padding: 18px;
+  }
+
+  .pipeline-node {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .pipeline-arrow {
+    transform: rotate(90deg);
+    margin: 2px 0;
+    justify-content: center;
+  }
+
+  .consumer-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 16px;
+  }
+
+  .lag-meter {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .schema-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 4. Compact Mobile Devices (<= 480px) */
+@media (max-width: 480px) {
+  .page-container {
+    padding: 12px 10px 32px 10px;
+    gap: 14px;
+  }
+
   .metrics-grid {
     grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .header-controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .time-dropdown {
+    grid-column: span 2;
+    width: 100%;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    width: 100%;
+  }
+
+  .platform-hero-banner {
+    padding: 14px;
+  }
+
+  .section-card {
+    border-radius: var(--radius-sm);
   }
 }

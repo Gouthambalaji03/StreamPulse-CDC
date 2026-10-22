@@ -62,7 +62,11 @@
 
   // DOM Elements
   const el = {
-    // Nav
+    // Navigation & Mobile Drawer
+    appSidebar: document.getElementById('appSidebar'),
+    mobileMenuBtn: document.getElementById('mobileMenuBtn'),
+    sidebarCloseBtn: document.getElementById('sidebarCloseBtn'),
+    sidebarBackdrop: document.getElementById('sidebarBackdrop'),
     navItems: document.querySelectorAll('.nav-item'),
     tabViews: document.querySelectorAll('.tab-view'),
     
@@ -580,9 +584,35 @@
 
   // Event Listeners
   function setupListeners() {
-    // Navigation
+    // Mobile Drawer Controls
+    function closeMobileSidebar() {
+      if (el.appSidebar) el.appSidebar.classList.remove('mobile-open');
+      if (el.sidebarBackdrop) el.sidebarBackdrop.classList.remove('open');
+    }
+
+    if (el.mobileMenuBtn) {
+      el.mobileMenuBtn.addEventListener('click', () => {
+        if (el.appSidebar) el.appSidebar.classList.add('mobile-open');
+        if (el.sidebarBackdrop) el.sidebarBackdrop.classList.add('open');
+      });
+    }
+
+    if (el.sidebarCloseBtn) {
+      el.sidebarCloseBtn.addEventListener('click', closeMobileSidebar);
+    }
+
+    if (el.sidebarBackdrop) {
+      el.sidebarBackdrop.addEventListener('click', closeMobileSidebar);
+    }
+
+    // Navigation with auto-close for mobile
     el.navItems.forEach(item => {
-      item.addEventListener('click', () => switchTab(item.dataset.tab));
+      item.addEventListener('click', () => {
+        switchTab(item.dataset.tab);
+        if (window.innerWidth <= 1024) {
+          closeMobileSidebar();
+        }
+      });
     });
     
     // Dashboard Filter Pills

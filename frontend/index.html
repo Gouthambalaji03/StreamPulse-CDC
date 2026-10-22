@@ -13,14 +13,18 @@
 <div class="app-container">
 
   <!-- Left Sidebar -->
-  <aside class="sidebar">
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+  <aside class="sidebar" id="appSidebar">
     <div class="brand-wrapper">
-      <div class="brand-icon">
-        <svg viewBox="0 0 24 24" fill="currentColor">
-          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5v-9l6 4.5-6 4.5z"/>
-        </svg>
+      <div style="display:flex; align-items:center; gap:12px;">
+        <div class="brand-icon">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5v-9l6 4.5-6 4.5z"/>
+          </svg>
+        </div>
+        <span class="brand-text">CDC Stream</span>
       </div>
-      <span class="brand-text">CDC Stream</span>
+      <button class="sidebar-close-btn" id="sidebarCloseBtn" aria-label="Close navigation">&times;</button>
     </div>
 
     <ul class="nav-menu">
@@ -98,6 +102,13 @@
     <!-- Top Sticky Header -->
     <header class="top-header">
       <div class="header-title-section">
+        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle navigation">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
         <h1 class="header-title" id="headerTitle">Change Events</h1>
         <div class="live-pill" id="connStatusPill">
           <span class="pulse-dot"></span> LIVE
